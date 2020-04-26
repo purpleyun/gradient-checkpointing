@@ -87,8 +87,10 @@ def gradients(ys, xs, grad_ys=None, checkpoints='collection', **kwargs):
     fwd_ops = [op for op in fwd_ops if not op in xs_ops]
     fwd_ops = [op for op in fwd_ops if not '/assign' in op.name]
     fwd_ops = [op for op in fwd_ops if not '/Assign' in op.name]
+    fwd_ops = [op for op in fwd_ops if not '/read' in op.name]
     fwd_ops = [op for op in fwd_ops if not '/Read' in op.name]
     ts_all = ge.filter_ts(fwd_ops, True) # get the tensors
+    ts_all = [t for t in ts_all if '/read' not in t.name]
     ts_all = [t for t in ts_all if '/Read' not in t.name]
     ts_all = set(ts_all) - set(xs) - set(ys)
 
